@@ -99,24 +99,29 @@ fun main() {
      * removeLast(): удаляет элемент в конце списка */
 //    grades.forEach()
 
-    val mergeTreeMap = TreeMap<Int, MutableList<String>>()
+//    val mergeTreeMap = TreeMap<Int, MutableList<String>>()
+//
+//    +mergeTreeMap
+//    for (key in gradesSet) {
+//        val l : MutableList<String> = mutableListOf()
+//        grades.forEach{
+//            if (key == it.num) {
+//                l.add(it.name)
+//            }
+//        }
+//        mergeTreeMap.merge(key, l) {_,_-> l}
+//    }
+    val mergeTreeMap = TreeMap<Int, String>()
 
-    +mergeTreeMap
-    for (key in gradesSet) {
-        val l : MutableList<String> = mutableListOf()
-        grades.forEach{
-            if (key == it.num) {
-                l.add(it.name)
-            }
-        }
-        mergeTreeMap.merge(key, l) {_,_-> l}
+    val m = listOf("Sheldon" to 5, "Leonard" to 4, "Howard" to 4, "Raj" to 3)
+
+    m.map {
+        mergeTreeMap.merge(it.second, it.first) { i, j -> " $i, $j" }
     }
-
 //    for (key in grades) {
 //
 //        mergeTreeMap.merge(key.num, key.name) { _, k -> "fj" }
 //    }
-
     +mergeTreeMap
 
 //    val gradesMerge = grades.merge()
