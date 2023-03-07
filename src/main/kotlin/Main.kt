@@ -1,7 +1,7 @@
 import java.util.*
 
 operator fun Any?.unaryPlus() =
-        this.apply { println(this) }
+    this.apply { println(this) }
 
 
 val boys: List<String> = listOf("Себастьян", "Акакий", "Ашот", "Кузьма")
@@ -43,8 +43,8 @@ fun main() {
     // Создает строку из всех элементов, разделенных с помощью разделителя и использующих заданный префикс и постфикс, если они указаны.
     val studentsString = studentWithIndexes.joinToString(prefix = "", postfix = "") {
         listOf(
-                it.first.toString(),
-                it.second.name
+            it.first.toString(),
+            it.second.name
         ).joinToString(prefix = "", postfix = "", separator = " - ")
     }
     +studentsString // 0 - Себастьян, 1 - Акакий, 2 - Ашот, 3 - Кузьма, 4 - Жанна, 5 - Агата, 6 - Забава, 7 - Барбара, 8 - Фрида
@@ -72,7 +72,7 @@ fun main() {
     поддерживает эффективное извлечение значения, соответствующего каждому ключу.
     Ключи карты уникальны; карта содержит только одно значение для каждого ключа*/
 
-    //Возвращает карту, содержащую пары ключ-значение, предоставленные функцией преобразования, примененной к элементам данной последовательности.
+    // Возвращает карту, содержащую пары ключ-значение, предоставленные функцией преобразования, примененной к элементам данной последовательности.
     // пары: оценка, количество
     val gradesMap = gradesSet.associate { i -> i to grades.countBy(i) { it.num } }
     +gradesMap
@@ -129,5 +129,10 @@ fun main() {
         mergeTreeMap.merge(it.second, it.first) { i, j -> " $i, $j" }
     }
     +mergeTreeMap
+
+    // Защита
+    val nameSizeMap =  students_0.associateWith { i -> i.length }
+    +nameSizeMap
+
 
 }
