@@ -1,6 +1,8 @@
 package lab_2
 
+//import kotlinx.serialization.*
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -10,7 +12,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.text.SimpleDateFormat
 import java.util.*
-
+import kotlinx.serialization.SerialName
 
 object ObjectMapper {
     val dateFormat = "yyyy.MM.dd"
@@ -33,19 +35,60 @@ data class Lesson<Date>(val name: String,
                         val date: Date
 )
 
+@Serializable
+data class Course(val name: String, @SerialName("tutor") val person: Person? /*= Person("A B")*/)
+
+@Serializable
+data class Person(
+
+        val firstname: String,
+        val surname: String
+) {
+
+    constructor(name: String) : this(
+            name.substringBefore(" "),
+            name.substringAfter(" ")
+    )
+}
+
+
+
+
+
+//@OptIn(ExperimentalSerializationApi::class)
 fun main() {
     // 1 ПУНКТ
     val dateObject = SimpleDateFormat(ObjectMapper.dateFormat)
     val date = dateObject.format(Date())
 //    println(date) // 2023.03.19
 
-    val lesson = Lesson("Java Date", Date(date))
-    val lessonJson = Json.encodeToString(Lesson.serializer(DateAsLongSerializer), lesson)
-
-    println(lessonJson)
-
+//    val lesson = Lesson("Java Date", Date(12))
+//    val lessonJson = Json.encodeToString(Lesson.serializer(DateAsLongSerializer), lesson)
+//
+//    println(lessonJson) // {"name":"Java Date","date":12}
 
     // 2 ПУНКТ
+
+    val course = Course("Math", Person("Leonard Euler"))
+    val courseJson = Json.encodeToString(Course.serializer(), course)
+
+    println(courseJson) // {"name":"Math","tutor":{"firstname":"Leonard","surname":"Euler"}}
+
+    val string = "{\"name\": \"Phys\"}"
+    println(string)
+
+    /* null-типы обрабатываются только в том случае,
+    если есть значение по-умолчанию, иначе выбросится исключение.*/
+    try {
+        val stringJson = Json.decodeFromString(Course.serializer(), string)
+        println(stringJson.name)
+        println(stringJson.person)
+    } catch (e: MissingFieldException) {
+        println("ERROR!")
+    }
+
+
+    // 3 ПУНКТ
 
 
 }
