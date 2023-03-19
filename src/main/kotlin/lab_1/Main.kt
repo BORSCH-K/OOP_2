@@ -1,3 +1,5 @@
+package lab_1
+
 import java.util.*
 
 operator fun Any?.unaryPlus() =
@@ -31,7 +33,7 @@ fun main() {
     val studentIndexes = students.mapIndexed { index, _ -> index }
     // index, _ (могут быть любыми буквами)
     // index - индекс элемента
-    // _ - сам элемент students с индексом index (в данном случае он пустой)
+    // _ - сам элемент lab_1.getStudents с индексом index (в данном случае он пустой)
     +studentIndexes
 
     // Возвращает список пар, построенных из элементов этого массива и другого массива с тем же индексом.
