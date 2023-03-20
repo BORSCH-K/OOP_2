@@ -1,5 +1,6 @@
 package lab_2
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -11,9 +12,13 @@ import java.awt.datatransfer.StringSelection
 import java.text.SimpleDateFormat
 import java.util.*
 
-object ObjectMapper {
-    val dateFormat = "yyyy.MM.dd"
-}
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import kotlin.collections.ArrayList
+
+//object ObjectMapper {
+//    val dateFormat = "yyyy.MM.dd"
+//}
 
 object DateAsLongSerializer : KSerializer<Date> {
     override val descriptor: SerialDescriptor =
@@ -29,7 +34,9 @@ object DateAsLongSerializer : KSerializer<Date> {
 @Serializable
 data class Lesson<Date>(val name: String,
 //                        @Serializable(with = DateAsLongSerializer::class)
-//                        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+//                        @JsonSerialize(as = Date.class)
+//                        @DateTimeFormat(pattern="dd/MM/yyyy")
+                        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
                         val date: Date
 )
 
@@ -61,16 +68,19 @@ class Week(val number: Int, val type: WeekType)
 //@OptIn(ExperimentalSerializationApi::class)
 fun main() {
     // 1 ПУНКТ
-    val dateObject = SimpleDateFormat(ObjectMapper.dateFormat)
-//    println(dateObject.toPattern()) // yyyy.MM.dd
-    val date = dateObject.format(Date())
+
+    val objectMapper = ObjectMapper()
+    val dateFormat = SimpleDateFormat("yyyy.MM.dd")
+    objectMapper.dateFormat = dateFormat
 //    println(date) // 2023.03.19
 
-    val lesson = Lesson("Java Date", date)
-    val lessonJson = Json.encodeToString(/*Lesson.serializer(DateAsLongSerializer),*/ lesson)
+    val lesson = Lesson("Java Date", Date())
+    val lessonJson = objectMapper.writeValueAsString(lesson)
+//    val lessonJson = Json.encodeToString(/*Lesson.serializer(DateAsLongSerializer),*/ lesson)
+    println(lesson.date)
 
-    println(lessonJson) // {"name":"Java Date","date":12}
-
+    println(lessonJson) // {"name":"Java Date","date":"2023.03.20"}
+    // {"name":"Java Date","date":"2023.03.20"}
 
 
     // 2 ПУНКТ
