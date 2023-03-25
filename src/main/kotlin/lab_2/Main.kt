@@ -8,13 +8,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import java.awt.datatransfer.StringSelection
-import java.text.SimpleDateFormat
 import java.util.*
-
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import kotlin.collections.ArrayList
 
 //object ObjectMapper {
 //    val dateFormat = "yyyy.MM.dd"
@@ -58,29 +52,54 @@ data class Person(
 
 //@Serializable(WeekTypeSerializer::class)
 enum class WeekType { TRAINING, SESSION, HOLIDAY }
+@Serializable
 class Week(val number: Int, val type: WeekType)
 
 //object WeekTypeSerializer : KSerializer<WeekType> {
 //    override val descriptor = SerialDescriptor("Week", StringSelection().descriptor)
 //
 //}
+object WeekTypeSerializer : KSerializer<WeekType> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("WeekType", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: WeekType) {
+        encoder.encodeString(
+                when (value) {
+                    WeekType.TRAINING -> "Обучение"
+                    WeekType.SESSION -> "Сессия"
+                    WeekType.HOLIDAY -> "Каникулы"
+                }
+        )
+    }
+    override fun deserialize(decoder: Decoder): WeekType {
+        return when (decoder.decodeString()) {
+            "Обучение" -> WeekType.TRAINING
+            "Сессия" -> WeekType.SESSION
+            "Каникулы" -> WeekType.HOLIDAY
+            else -> error("error!!!")
+        }
+    }
+}
+
+@Serializable
+data class WeekSerialize(val number: Int, @Serializable(with = WeekTypeSerializer::class) val type: WeekType)
 
 //@OptIn(ExperimentalSerializationApi::class)
 fun main() {
     // 1 ПУНКТ
 
-    val objectMapper = ObjectMapper()
-    val dateFormat = SimpleDateFormat("yyyy.MM.dd")
-    objectMapper.dateFormat = dateFormat
-//    println(date) // 2023.03.19
-
-    val lesson = Lesson("Java Date", Date())
-    val lessonJson = objectMapper.writeValueAsString(lesson)
-//    val lessonJson = Json.encodeToString(/*Lesson.serializer(DateAsLongSerializer),*/ lesson)
-    println(lesson.date)
-
-    println(lessonJson) // {"name":"Java Date","date":"2023.03.20"}
-    // {"name":"Java Date","date":"2023.03.20"}
+//    val objectMapper = ObjectMapper()
+//    val dateFormat = SimpleDateFormat("yyyy.MM.dd")
+//    objectMapper.dateFormat = dateFormat
+////    println(date) // 2023.03.19
+//
+//    val lesson = Lesson("Java Date", Date())
+//    val lessonJson = objectMapper.writeValueAsString(lesson)
+////    val lessonJson = Json.encodeToString(/*Lesson.serializer(DateAsLongSerializer),*/ lesson)
+//    println(lesson.date)
+//
+//    println(lessonJson) // {"name":"Java Date","date":"2023.03.20"}
+//    // {"name":"Java Date","date":"2023.03.20"}
 
 
     // 2 ПУНКТ
@@ -119,6 +138,11 @@ fun main() {
 //    println(weeks)
     val weeksJson = Json.encodeToString(weeks)
     println(weeksJson)
+
+
+    val serWeeks = weekArray.map {  WeekSerialize(it.first, it.second) }
+    val serWeeksJson = Json.encodeToString(serWeeks)
+    println(serWeeksJson)
 
 
 }
