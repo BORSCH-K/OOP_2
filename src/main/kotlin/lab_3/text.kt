@@ -12,8 +12,8 @@ fun <T> Iterable<T>.countBy(value: Int, selector: (T) -> Int): Int {
             count++
     return count
 }
-val a = 0
-val aasd = 1
+val att = 0
+val btt = 1
 fun main() {
     +students
     val studentIndexes = students.mapIndexed { index, _ -> index }
