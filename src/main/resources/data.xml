@@ -2685,9 +2685,7 @@
                 <structure:Description xml:lang="ru">Ярославская область</structure:Description>
             </structure:Code>
             <structure:Code value="45000000000">
-                <structure:Description xml:lang="ru">Город Москва столица Российской Федерации город федерального
-                    значения
-                </structure:Description>
+                <structure:Description xml:lang="ru">Город Москва столица Российской Федерации город федерального значения</structure:Description>
             </structure:Code>
             <structure:Code value="041">
                 <structure:Description xml:lang="ru">Сибирский федеральный округ</structure:Description>
