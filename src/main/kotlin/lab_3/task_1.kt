@@ -18,3 +18,4 @@ fun task_1() {
     }
     println()
 }
+

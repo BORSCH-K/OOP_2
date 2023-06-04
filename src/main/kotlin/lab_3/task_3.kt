@@ -36,21 +36,17 @@ fun task_3() {
     }
 
     println("Пункт 2")
-
-    val reader2 = XMLInputFactory.newInstance().createXMLEventReader(FileInputStream("src/main/resources/data.xml"))
-
+    val reader2 = XMLInputFactory.newInstance()
+        .createXMLEventReader(FileInputStream("src/main/resources/data.xml"))
     val monthAndYear = ArrayList<String>()
     val costRF = ArrayList<String>() // 643
     val costMoscow = ArrayList<String>() // 52401000000
     val costOmsk = ArrayList<String>() // 45000000000
-
     var k_dormitory = 0
     var cost = ""
     var city = ""
-
     var year = ""
     var month = ""
-
     while (reader2.hasNext()) {
         val xmlEvent = reader2.nextEvent()
         if (xmlEvent.isStartElement) {
@@ -60,29 +56,22 @@ fun task_3() {
                     when (startElement.getAttributeByName(QName("concept"))?.value) {
                         "s_grtov" -> k_dormitory =
                             if (startElement.getAttributeByName(QName("value"))?.value == "9415") 1 else 0
-
                         "s_OKATO" -> city = startElement.getAttributeByName(QName("value"))?.value!!
                         "PERIOD" -> month = startElement.getAttributeByName(QName("value"))?.value!!
                     }
                 }
-
                 "Time" -> year = reader2.elementText
-
                 "ObsValue" -> cost = startElement.getAttributeByName(QName("value"))?.value!!
             }
-
-
         } else if (xmlEvent.isEndElement && xmlEvent.asEndElement().name.localPart == "Series"
             && k_dormitory == 1 && (year > "2012")
         ) {
-
             when (city) {
                 "643" -> costRF.add(cost)
                 "52401000000" -> costMoscow.add(cost)
                 "45000000000" -> costOmsk.add(cost)
             }
             monthAndYear.add("$month $year")
-
         }
     }
 
