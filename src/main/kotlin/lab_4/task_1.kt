@@ -18,10 +18,10 @@ fun incCount(countName: String) {
 
 fun incOrCreateCount(countName: String) {
     countsMongo.updateOne(
-        dop.Count::name eq countName,
-        inc(dop.Count::value, 1),
-        UpdateOptions().upsert(true) // создает не существующие
-    )
+        Count::name eq countName,
+        inc(Count::value, 1),
+        UpdateOptions().upsert(true)            // UpdateOptions() - Параметры, которые следует применять при обновлении документов.
+    )                                           // upsert() установает значение true, если необходимо вставить новый документ, если нет совпадений с фильтром запроса.
 }
 
 fun task_1() {
@@ -40,7 +40,7 @@ fun task_1() {
     prettyPrintCursor(countsMongo.find())
 
     println("Пункт 2")
-    incOrCreateCount("Tables") // 3
+    incOrCreateCount("Tables")   // 3
     incOrCreateCount("Listings") // создается с 1
     incOrCreateCount("Listings") // 2
     prettyPrintCursor(countsMongo.find())
@@ -48,7 +48,9 @@ fun task_1() {
     println("Пункт 3")
 
     val more0 = countsMongo.find(Count::value gt 0)
-    val range = countsMongo.find(and(Count::value gte 1, Count::value lte 2))
+    val range = countsMongo.find(
+        and(Count::value gte 1, Count::value lte 2)
+    )
     println("Больше 0:")
     prettyPrintCursor(more0)
     println("От 1 до 2:")

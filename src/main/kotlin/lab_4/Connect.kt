@@ -4,6 +4,7 @@ import com.mongodb.ExplainVerbosity
 import com.mongodb.client.FindIterable
 import org.json.JSONObject
 import org.litote.kmongo.KMongo
+import org.litote.kmongo.formatJson
 import org.litote.kmongo.json
 
 val client = KMongo // подключение к серверу
