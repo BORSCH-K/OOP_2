@@ -57,6 +57,8 @@ class UnwindStudentsCourses(
 
 
 
+
+
 // 4 ----------------------------------------------------------------------------
 @Serializable
 data class StudentNew(
@@ -91,44 +93,81 @@ data class CourseNew(
 )
 
 
-
-
-
-
 @Serializable
-data class Id(
+data class Result(
+    val _id:  String, // _Id,
+    val grades: Int
+
+)
+@Serializable
+data class _Id(
     val name: String,
     val course: String,
 )
 
-
-
-
+// ---------------------------------------
 
 @Serializable
-data class Result(
-    val _id: String,
-    val grades: Int
+data class S(
+    val name: String, // Имя студента
+    val group: String, // Группа студента (Boys, Girls)
+    var grades: List<G> = emptyList(), // Коллекция оценок
 )
 
 @Serializable
-data class StudentGrade(
+data class G(
+    val courseName: String, //? = null,
+//    val studentName: String,
     val value: Int? = null,
-    @Serializable(with = DateAsLongSerializer::class)
-    val date: Date? = null,
+    val courseId: @Contextual Id<C>,
 )
 
 @Serializable
-data class UnwindStudentCourse(
-    val name: String,
-    val grades: StudentGrade
+data class C(
+    val name: String, // Название дисциплины (предмета)
+    @Contextual val id: Id<C> = newId()
 )
 
 @Serializable
-class UnwindCourse(
-    val name: String,
-    val grades: Grade
+data class R(
+    val _id:  I, // _Id,
+    val grades: Int
+
 )
+
+@Serializable
+data class I(
+    val name: String,
+    val course: String,
+)
+
+@Serializable
+class Temp(
+    val name: String,
+    val course: String,
+    val value: Int
+)
+
+
+
+//@Serializable
+//data class StudentGrade(
+//    val value: Int? = null,
+//    @Serializable(with = DateAsLongSerializer::class)
+//    val date: Date? = null,
+//)
+//
+//@Serializable
+//data class UnwindStudentCourse(
+//    val name: String,
+//    val grades: StudentGrade
+//)
+//
+//@Serializable
+//class UnwindCourse(
+//    val name: String,
+//    val grades: Grade
+//)
 
 
 

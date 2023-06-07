@@ -8,6 +8,7 @@ repositories {
 val serializationVersion = "1.5.0-RC"
 val jacksonVersion = "2.14.2"
 val kotestVersion = "5.5.5"
+
 dependencies{
     testImplementation(
         "io.kotest:kotest-runner-junit5-jvm:$kotestVersion")}

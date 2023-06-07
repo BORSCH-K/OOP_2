@@ -1,24 +1,27 @@
 package lab_4
 
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import org.litote.kmongo.*
 import java.util.*
 
 
 val mStudentsNew = mongoDatabase.getCollection<StudentNew>().apply { drop() }
 val mCoursesNew = mongoDatabase.getCollection<CourseNew>().apply { drop() }
-
+val mStud = mongoDatabase.getCollection<S>().apply { drop() }
 
 
 fun task_4() {
 
     // Пункт 1
-    println("Пункт 1")
+
+    /*println("Пункт 1")
     val courses = listOf("Math", "Phys", "History").map { CourseNew(it) }
     var i = 0
-    val gr = listOf(2, 3, 5, 4, 2, 5, 4, 5, 3, 4, 5, 2, 4, 3, 5, 3, 2, 2)
+    val gr = listOf(2, 3, 5, 4, 2, 5, 4, 5, 5, 4, 5, 2, 4, 3, 5, 3, 2, 2)
     val students = listOf("Penny", "Amy").map { name ->
         StudentNew(name, "Girls",
-            grades = courses.map {                             // доразобраться
+            grades = courses.map {
                 GradeNew(courseName = it.name, studentName = name, value = gr[i++], it.id)
             }
         )
@@ -30,8 +33,7 @@ fun task_4() {
         )
     }
     println(students.joinToString(separator = "\n\n"))
-
-    mCoursesNew.insertMany(courses/*.map { CourseNew(name = it) }*/)
+    mCoursesNew.insertMany(courses)
     mStudentsNew.insertMany(students)
 
 
@@ -39,48 +41,97 @@ fun task_4() {
     println("Студенты, не имеющие оценки ниже 4:")
     prettyPrintCursor(
         mStudentsNew.aggregate<StudentNew>(
-            match(StudentNew::grades.elemMatch(GradeNew::value gte (4)))
-// elemMatch - Создает фильтр, который соответствует всем документам, содержащим свойство, представляющее
-// собой массив, где по крайней мере один элемент массива соответствует заданному фильтру.
+            match(not(StudentNew::grades elemMatch (GradeNew::value lte 3)))
+    // elemMatch - Создает фильтр, который соответствует всем документам, содержащим свойство, представляющее
+    // собой массив, где по крайней мере один элемент массива соответствует заданному фильтру.
         )
     )
-//
+    //
     println("Пункт 3")
     println("Разворачиваем документ с оценками:")
     prettyPrintCursor(
         mStudentsNew.aggregate<UnwindStudents>(
-            match(StudentNew::grades.elemMatch(GradeNew::value gte 4)),
-            unwind("\$grades") // разворачивает
-            // Деконструирует поле массива из входных документов для вывода документа для
-            // каждого элемента. Каждый выходной документ является входным документом,
-            // в котором значение поля массива заменено элементом.
+            match(not(StudentNew::grades elemMatch (GradeNew::value lte 3))),
+            unwind("\$grades")
         )
     )
 
     println("Пункт 4")
-    println("Оставляем поля с именем студента, названием курса и оценкой (project).")
+    println("Оставляем поля с именем студента, названием курса и оценкой")
     prettyPrintCursor(
         mStudentsNew.aggregate<UnwindStudentsCourses>(
-            match( // Фильтрует документы, чтобы передать на следующий этап конвейера
-                // только те документы, которые соответствуют указанным условиям.
-                StudentNew::grades.elemMatch // Создает фильтр, который соответствует всем документам, содержащим
-                // свойство, представляющее собой массив, где по крайней мере один элемент массива соответствует
-                // заданному фильтру.
-                    (GradeNew::value.gte(4))
-
-            ),
+            match(not(StudentNew::grades elemMatch (GradeNew::value lte 3))),
             unwind("\$grades"),
             project(
-// Передает документы с запрошенными полями на следующий этап конвейера. Указанные
-// поля могут быть существующими полями из входных документов или вновь вычисленными полями.
                 UnwindStudentsCourses::name from UnwindStudents::name,
-                UnwindStudentsCourses::courseAndGrade / CourseAndGrade::nameCourse  from UnwindStudents::grades / GradeNew::courseName,
-                UnwindStudentsCourses::courseAndGrade / CourseAndGrade::grade from UnwindStudents::grades / GradeNew::value
+                UnwindStudentsCourses::courseAndGrade / CourseAndGrade::nameCourse
+                        from UnwindStudents::grades / GradeNew::courseName,
+                UnwindStudentsCourses::courseAndGrade / CourseAndGrade::grade
+                        from UnwindStudents::grades / GradeNew::value
+            )
+        )
+    )*/
+
+    println("Пункт 5")
+
+    val cour = listOf("Math", "Phys", "History").map { C(it) }
+    val stud = listOf(
+        S(
+            "Amy", "А", grades = listOf(
+                G("Math", 4, cour[0].id),
+                G("Math", 5, cour[0].id),
+                G("Math", 3, cour[0].id),
+                G("Phys", 3, cour[1].id),
+                G("Phys", 4, cour[1].id),
+            )
+        ),
+        S(
+            "Alla", "А", grades = listOf(
+                G("Math", 3, cour[0].id),
+                G("Math", 2, cour[0].id),
+                G("Math", 4, cour[0].id),
+                G("History", 5, cour[2].id),
+                G("History", 3, cour[2].id),
+                G("Phys", 4, cour[2].id)
             )
         )
     )
+    mStud.insertMany(stud)
 
-    println("Пункт 5")
+    prettyPrintCursor2(
+        mStud.aggregate<R>(
+            unwind("\$grades"),
+            project(
+                Temp::name from S::name,
+                Temp::course from S::grades / G::courseName,
+                Temp::value from S::grades / G::value
+            ),
+//            project(
+//                Temp::name from 1,
+//                Temp::course from 1,
+//                Temp::value from 1
+//            ),
+            group(
+                fields(
+                    I::name from Temp::name,
+                    I::course from Temp::course
+                ),
+//                UnwindStudents::name,
+                Result::grades max Temp::value
+
+//                fields(
+//                    Result::_id from UnwindStudentsCourses::courseAndGrade / CourseAndGrade::nameCourse,
+//                ),
+//                Result::grades max UnwindStudentsCourses::courseAndGrade / CourseAndGrade::grade
+            )
+        )/*.map {
+            println(it)
+//            println(it._id.name.toString()+ " " + it._id.course.toString() + " "+ it.grades.toString())
+        }*/
+    )
+}
+
+
 //    prettyPrintCursor(
 //        mCoursesNew.aggregate<Result>(
 //            unwind("\$grades"),
@@ -145,7 +196,7 @@ fun task_4() {
 //    )
 
 
-}
+//}
 
 
 //@Serializable

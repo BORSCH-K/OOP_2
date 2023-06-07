@@ -50,7 +50,7 @@ fun task_3() {
         Population::value gt 1e+6F,
         Population::year eq 2018
     )
-//    prettyPrintExplain(population.find(bsonRequest))
+    prettyPrintExplain(population.find(bsonRequest))
 
 
     /* createIndex
@@ -65,16 +65,15 @@ fun task_3() {
 
 
     population.dropIndex(yearIndex)
-
-//    population.dropIndex(yearIndex)
-
     prettyPrintExplain(population.find(bsonRequest))
 
-    val yearAndValueIndex = population.createIndex(Document.parse("{'Year': 1, 'Value' : 1}"))
+    val yearAndValueIndex = population
+        .createIndex(Document.parse("{'Year': 1, 'Value' : 1}"))
     prettyPrintExplain(population.find(bsonRequest))
-    population.dropIndex(yearAndValueIndex)
 
-    prettyPrintExplain(population.find(bsonRequest))
+//    population.dropIndex(yearAndValueIndex)
+
+//    prettyPrintExplain(population.find(bsonRequest))
 
 //    var i = 0
 //
