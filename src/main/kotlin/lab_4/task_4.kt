@@ -92,13 +92,13 @@ fun task_4() {
                 G("Math", 4, cour[0].id),
                 G("History", 5, cour[2].id),
                 G("History", 3, cour[2].id),
-                G("Phys", 4, cour[2].id)
+                G("Phys", 4, cour[1].id)
             )
         )
     )
     mStud.insertMany(stud)
 
-    prettyPrintCursor2(
+    prettyPrintCursor(
         mStud.aggregate<R>(
             unwind("\$grades"),
             project(
@@ -106,28 +106,14 @@ fun task_4() {
                 Temp::course from S::grades / G::courseName,
                 Temp::value from S::grades / G::value
             ),
-//            project(
-//                Temp::name from 1,
-//                Temp::course from 1,
-//                Temp::value from 1
-//            ),
             group(
                 fields(
                     I::name from Temp::name,
                     I::course from Temp::course
                 ),
-//                UnwindStudents::name,
                 Result::grades max Temp::value
-
-//                fields(
-//                    Result::_id from UnwindStudentsCourses::courseAndGrade / CourseAndGrade::nameCourse,
-//                ),
-//                Result::grades max UnwindStudentsCourses::courseAndGrade / CourseAndGrade::grade
             )
-        )/*.map {
-            println(it)
-//            println(it._id.name.toString()+ " " + it._id.course.toString() + " "+ it.grades.toString())
-        }*/
+        )
     )
 }
 

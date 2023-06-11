@@ -38,8 +38,8 @@ dependencies {
 //    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
 //    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
 //    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-//    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
-//    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.8")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.8")
 //    implementation("org.jsoup:jsoup:1.14.3")
 }
 dependencies {
