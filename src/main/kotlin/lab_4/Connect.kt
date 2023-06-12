@@ -3,10 +3,10 @@ package lab_4
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import com.mongodb.ExplainVerbosity
+import com.mongodb.client.AggregateIterable
 import com.mongodb.client.FindIterable
 import org.json.JSONObject
 import org.litote.kmongo.KMongo
-import org.litote.kmongo.formatJson
 import org.litote.kmongo.json
 
 val client = KMongo // подключение к серверу
@@ -22,18 +22,32 @@ fun prettyPrintExplain(cursor: FindIterable<*>) =
     prettyPrintJson(cursor.explain(ExplainVerbosity.EXECUTION_STATS).json)
 
 
-fun prettyPrintCursor2(cursor: Iterable<R>) {
+fun prettyPrintCursor_4(cursor: Iterable<Temp>) {
+    cursor.forEach {
+        println(//it
+            "Temp(name = ${it.name}, " +
+                    "course = ${it.course}, " +
+                    "value = ${it.value})"
+        )
+    }
+}
+
+fun prettyPrintCursor_3(cursor: Iterable<Temp>) {
+    cursor.forEach {
+        println(
+            "Temp(name = ${it.name}, " +
+                    "course = ${it.course}, " +
+                    "value = ${it.value})"
+        )
+    }
+//    println()
+}
+
+fun prettyPrintCursor_2(cursor: Iterable<R>) {
     prettyPrintJson2("{ \"result\": ${cursor.json}}")
     prettyPrintJson3(cursor.json)
 }
-//    println(cursor.json)
-//    prettyPrintJson2(cursor.json)
 
-//    cursor.forEach {
-//        println(it)
-////        println(it._id.name + " "+ it._id.course + " " + it.grades)
-////println(it)
-//    }
 val format = Json { ignoreUnknownKeys = true }
 fun prettyPrintJson2(json: String) {
     println(json)
@@ -42,29 +56,25 @@ fun prettyPrintJson2(json: String) {
         .jsonObject["result"]!!//.jsonObject["_id"]//?.json
         .jsonArray
         .forEach {
-//            println(it)
-//            println(it.jsonObject["_id"]!!.jsonObject["name"])
-//            println(it.jsonObject["_id"]!!.jsonObject["course"])
-//            println(it.jsonObject["grades"])
             a.add(Temp1(
                 it.jsonObject["_id"]!!.jsonObject["name"].toString(),
                 it.jsonObject["_id"]!!.jsonObject["course"].toString(),
                 it.jsonObject["grades"]
-            )
-                .apply {
-                    println(
-                        "Temp(name = ${this.name}, " +
-                                "course = ${this.course}, " +
-                                "grade = ${this.grades})"
-                    )
-                }
+            ).apply {
+                println(
+                    "Temp(name = ${this.name}, " +
+                            "course = ${this.course}, " +
+                            "grade = ${this.grades})"
+                )
+            }
             )
         }
-} // оформление
+}
+
 fun prettyPrintJson3(json: String) {
     val data = format.decodeFromString<List<R>>(json)
     println(data)
-    val data_1 = data.map {
+    data.map {
         Temp2(it._id.name, it._id.course, it.grades)
             .apply {
                 println("Temp(name = ${this.name}, course = ${this.course}, grade = ${this.grades})")

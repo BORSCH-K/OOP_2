@@ -50,9 +50,9 @@ class CourseAndGrade(
 @Serializable
 class UnwindStudentsCourses(
     val name: String,
-    val courseAndGrade : CourseAndGrade,
-//    val course: String,
-//    val value: Int
+//    val courseAndGrade : CourseAndGrade,
+    val course: String,
+    val value: Int
 )
 
 
@@ -146,75 +146,3 @@ class Temp(
     val course: String,
     val value: Int
 )
-
-
-
-//@Serializable
-//data class StudentGrade(
-//    val value: Int? = null,
-//    @Serializable(with = DateAsLongSerializer::class)
-//    val date: Date? = null,
-//)
-//
-//@Serializable
-//data class UnwindStudentCourse(
-//    val name: String,
-//    val grades: StudentGrade
-//)
-//
-//@Serializable
-//class UnwindCourse(
-//    val name: String,
-//    val grades: Grade
-//)
-
-
-
-
-
-
-
-
-
-//@Serializable
-//data class Results(
-//    val course: String,
-//)
-//
-//@Serializable
-//class UnwindCourse(
-//    val name: String,
-//    val grades: Grade
-//)
-
-//@Serializable
-//data class Id(
-//    val name: String,
-//    val course: String,
-//)
-//
-//@Serializable
-//data class Result(
-//    val _id: lab_4.Id,
-//    val grades: Int
-//)
-//
-//@Serializable
-//data class DefId(
-//    val name: String,
-////    val cources: List<String>
-//)
-//
-//@Serializable
-//data class Def(
-//    val name: String,
-//    val courses: String,
-//    val sumGrades: Int
-//)
-//
-//@Serializable
-//data class DefResult(
-//    val _id: DefId,
-//    val courses: List<String>,
-//    val sumGrades: Int,
-//)
